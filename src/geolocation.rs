@@ -1,8 +1,8 @@
 use crate::account_reader::Accounts;
-use crate::auth::Connection;
 use anyhow::Error;
 use chrono::{DateTime, Utc};
 use egg_mode::tweet::user_timeline;
+use egg_mode::Token;
 use std::collections::HashMap;
 
 pub type AccountGeolocations = HashMap<String, TimedGeolocations>;
@@ -13,14 +13,11 @@ pub struct TimedGeolocation(DateTime<Utc>, Geolocation);
 #[derive(Debug)]
 pub struct Geolocation(f64, f64);
 
-pub async fn geolocate(
-    accounts: Accounts,
-    connection: Connection,
-) -> Result<AccountGeolocations, Error> {
+pub async fn geolocate(accounts: Accounts, token: Token) -> Result<AccountGeolocations, Error> {
     let mut account_geolocations = HashMap::new();
     for account in accounts {
         let mut timed_geolocations = vec![];
-        let timeline = user_timeline(account.clone(), true, false, &connection.token);
+        let timeline = user_timeline(account.clone(), true, false, &token);
         let (_timeline, feed) = timeline.start().await?;
         for tweet in &*feed {
             if let Some((x, y)) = tweet.coordinates {
