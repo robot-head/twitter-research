@@ -1,11 +1,13 @@
 use anyhow::Error;
 use egg_mode::Token;
 use std::io::stdin;
+
 pub struct Connection {
     pub token: Token,
     pub user_id: u64,
     pub screen_name: String,
 }
+
 pub async fn authenticate(
     consumer_key: String,
     consumer_secret: String,
