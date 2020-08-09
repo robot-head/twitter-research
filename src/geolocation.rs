@@ -5,7 +5,7 @@ use chrono::{DateTime, Utc};
 use egg_mode::tweet::user_timeline;
 use std::collections::HashMap;
 
-pub type Geolocations = HashMap<String, TimedGeolocations>;
+pub type AccountGeolocations = HashMap<String, TimedGeolocations>;
 pub type TimedGeolocations = Vec<TimedGeolocation>;
 
 #[derive(Debug)]
@@ -13,8 +13,11 @@ pub struct TimedGeolocation(DateTime<Utc>, Geolocation);
 #[derive(Debug)]
 pub struct Geolocation(f64, f64);
 
-pub async fn geolocate(accounts: Accounts, connection: Connection) -> Result<Geolocations, Error> {
-    let mut geolocations = HashMap::new();
+pub async fn geolocate(
+    accounts: Accounts,
+    connection: Connection,
+) -> Result<AccountGeolocations, Error> {
+    let mut account_geolocations = HashMap::new();
     for account in accounts {
         let mut timed_geolocations = vec![];
         let timeline = user_timeline(account.clone(), true, false, &connection.token);
@@ -24,7 +27,7 @@ pub async fn geolocate(accounts: Accounts, connection: Connection) -> Result<Geo
                 timed_geolocations.push(TimedGeolocation(tweet.created_at, Geolocation(x, y)));
             }
         }
-        geolocations.insert(account, timed_geolocations);
+        account_geolocations.insert(account, timed_geolocations);
     }
-    Ok(geolocations)
+    Ok(account_geolocations)
 }
