@@ -6,6 +6,7 @@ edition = "2018"
 
 [dependencies]
 anyhow = "1"
+chrono = "0.4"
 egg-mode = { version = "0.15", features = ["rustls_webpki"], default-features = false }
 pico-args = "0.3.4"
 tokio = "0.2.22"
